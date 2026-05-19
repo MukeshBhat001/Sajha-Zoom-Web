@@ -36,6 +36,14 @@ function getDefaultDateRange() {
   return { from, to };
 }
 
+function startOfZoomDate(date) {
+  return new Date(`${formatDate(date)}T00:00:00.000Z`);
+}
+
+function endOfZoomDate(date) {
+  return new Date(`${formatDate(date)}T23:59:59.999Z`);
+}
+
 function isVideoFile(file) {
   return file?.file_type === 'MP4' && file?.status === 'completed' && file?.id && file?.download_url;
 }
@@ -79,8 +87,11 @@ async function syncMeeting(meeting) {
   const videoFiles = files.filter(isVideoFile);
   const thumbnailFile = files.find(isThumbnailFile);
   const results = [];
+  const zoomFileIds = [];
 
   for (const file of videoFiles) {
+    zoomFileIds.push(file.id);
+
     const title = buildTitle(meeting, videoFiles, file);
     const update = {
       zoomFileId: file.id,
@@ -121,8 +132,57 @@ async function syncMeeting(meeting) {
 
   return {
     videoFiles: videoFiles.length,
+    zoomFileIds,
     upserted: results.reduce((sum, result) => sum + (result.upsertedCount ?? 0), 0),
     modified: results.reduce((sum, result) => sum + (result.modifiedCount ?? 0), 0)
+  };
+}
+
+async function removeDeletedZoomRecordings({ currentZoomFileIds, fromDate, toDate }) {
+  const currentZoomFileIdList = Array.from(currentZoomFileIds);
+  const syncedRangeStart = startOfZoomDate(fromDate);
+  const syncedRangeEnd = endOfZoomDate(toDate);
+  const staleRecordingFilter = {
+    source: 'zoom',
+    startTime: {
+      $gte: syncedRangeStart,
+      $lte: syncedRangeEnd
+    },
+    zoomFileId: {
+      $nin: currentZoomFileIdList
+    }
+  };
+
+  const staleRecordings = await Recording.find(staleRecordingFilter)
+    .select('_id zoomFileId title startTime')
+    .lean();
+
+  if (staleRecordings.length === 0) {
+    console.log('Zoom sync cleanup: no deleted Zoom recordings found in MongoDB.');
+    return {
+      deleted: 0,
+      removed: []
+    };
+  }
+
+  staleRecordings.forEach((recording) => {
+    console.log(`Zoom sync cleanup: removing deleted Zoom recording ${recording.zoomFileId} - ${recording.title}`);
+  });
+
+  const deleteResult = await Recording.deleteMany({
+    _id: {
+      $in: staleRecordings.map((recording) => recording._id)
+    }
+  });
+
+  return {
+    deleted: deleteResult.deletedCount ?? staleRecordings.length,
+    removed: staleRecordings.map((recording) => ({
+      id: recording._id.toString(),
+      zoomFileId: recording.zoomFileId,
+      title: recording.title,
+      startTime: recording.startTime
+    }))
   };
 }
 
@@ -136,6 +196,7 @@ export async function syncZoomRecordings({ from, to } = {}) {
   const toDate = to ? new Date(to) : defaultRange.to;
   const windows = buildDateWindows(fromDate, toDate);
   const userIds = getZoomUserIds();
+  const currentZoomFileIds = new Set();
 
   const summary = {
     users: userIds.length,
@@ -144,6 +205,8 @@ export async function syncZoomRecordings({ from, to } = {}) {
     videoFilesSeen: 0,
     created: 0,
     updated: 0,
+    deleted: 0,
+    removed: [],
     startedAt: new Date(),
     finishedAt: null
   };
@@ -168,6 +231,7 @@ export async function syncZoomRecordings({ from, to } = {}) {
           summary.videoFilesSeen += result.videoFiles;
           summary.created += result.upserted;
           summary.updated += result.modified;
+          result.zoomFileIds.forEach((zoomFileId) => currentZoomFileIds.add(zoomFileId));
         }
 
         nextPageToken = response.next_page_token ?? '';
@@ -175,6 +239,14 @@ export async function syncZoomRecordings({ from, to } = {}) {
     }
   }
 
+  const cleanupResult = await removeDeletedZoomRecordings({
+    currentZoomFileIds,
+    fromDate,
+    toDate
+  });
+
+  summary.deleted = cleanupResult.deleted;
+  summary.removed = cleanupResult.removed;
   summary.finishedAt = new Date();
   return summary;
 }
