@@ -1,0 +1,19 @@
+export function publicRecording(recording) {
+  return {
+    id: recording._id.toString(),
+    title: recording.title,
+    category: recording.category,
+    startTime: recording.startTime,
+    recordingStart: recording.recordingStart,
+    recordingEnd: recording.recordingEnd,
+    durationMinutes: recording.durationMinutes,
+    fileType: recording.fileType,
+    recordingType: recording.recordingType,
+    fileSize: recording.fileSize,
+    playUrl: recording.playUrl,
+    source: recording.source,
+    hasThumbnail: Boolean(recording.thumbnailDownloadUrl),
+    createdAt: recording.createdAt,
+    updatedAt: recording.updatedAt
+  };
+}
