@@ -6,7 +6,8 @@ import RecordingCard from './components/RecordingCard.jsx';
 import RecordingPlayer from './components/RecordingPlayer.jsx';
 import { apiRequest, endpoints } from './utils/api.js';
 
-const LOGO_SOURCES = ['/sajha-logo.png', '/sajha-logo.jpg', '/sajha-logo.svg', '/sajha-logo.webp'];
+const LOGO_SOURCES = ['/sajha-logo.jpg'];
+const MUKESH_BHAT_FACEBOOK_URL = 'https://www.facebook.com/mukesh.bhat.343354'; // Replace with your Facebook URL.
 
 export default function App() {
   const [recordings, setRecordings] = useState([]);
@@ -73,7 +74,7 @@ export default function App() {
   }
 
   return (
-    <main className="min-h-screen bg-[#fff7f2] text-zinc-950">
+    <main className="flex min-h-screen flex-col bg-[#fff7f2] text-zinc-950">
       <section className="border-b border-orange-100 bg-white">
         <div className="mx-auto flex max-w-7xl flex-col gap-5 px-4 py-6 sm:px-6 lg:px-8">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
@@ -130,7 +131,7 @@ export default function App() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+      <section className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6 lg:px-8">
         {error ? (
           <div className="mb-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
             {error}
@@ -160,6 +161,22 @@ export default function App() {
           <EmptyState onSync={handleSync} syncing={syncing} />
         )}
       </section>
+
+      <footer className="border-t border-orange-100 bg-white px-4 py-3 text-center">
+        <p className="text-base font-semibold text-[#ff5a00] sm:text-lg">
+          Hand Crafted with <span aria-label="coffee" role="img">☕</span> and{' '}
+          <span aria-label="love" role="img">❤️</span> by{' '}
+          <a
+            href={MUKESH_BHAT_FACEBOOK_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="font-bold text-zinc-950 transition hover:text-[#ff5a00] hover:underline"
+          >
+            Mukesh Bhat
+          </a>
+        </p>
+        <p className="mt-1 text-base text-zinc-950 sm:text-lg">Copyright 2026 | All Rights Reserved</p>
+      </footer>
 
       <RecordingPlayer recording={selectedRecording} onClose={() => setSelectedRecording(null)} />
     </main>
