@@ -23,7 +23,9 @@ app.use(
         !origin ||
         env.NODE_ENV !== 'production' ||
         origin === serverOrigin ||
-        allowedOrigins.includes(origin)
+        allowedOrigins.includes(origin) ||
+        origin.includes('onrender.com')
+
       ) {
         return callback(null, true);
       }
