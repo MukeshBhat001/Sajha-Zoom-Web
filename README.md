@@ -102,3 +102,19 @@ NODE_ENV=production npm start
 ```
 
 In production, Express serves the built client from `dist/client`.
+
+### Vercel frontend with Render API
+
+Set this environment variable in Vercel before redeploying the frontend:
+
+```env
+VITE_API_URL=https://sajha-zoom-web.onrender.com
+```
+
+The frontend uses relative `/api` URLs in local development so Vite can proxy requests to `http://localhost:5000`. In production, `VITE_API_URL` is prepended to API requests for recordings, categories, sync, thumbnails, and stream playback.
+
+On Render, set `CLIENT_ORIGIN` to your Vercel frontend origin without a trailing slash, for example:
+
+```env
+CLIENT_ORIGIN=https://your-vercel-app.vercel.app
+```

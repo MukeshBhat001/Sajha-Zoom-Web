@@ -1,7 +1,31 @@
+const configuredApiBaseUrl = import.meta.env.VITE_API_URL?.trim() ?? '';
+const apiBaseUrl = configuredApiBaseUrl.replace(/\/+$/, '');
+const apiPrefix = '/api';
+
+function apiUrl(path) {
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  return `${apiBaseUrl}${normalizedPath}`;
+}
+
+export const endpoints = {
+  recordings(queryString = '') {
+    const suffix = queryString ? `?${queryString}` : '';
+    return `${apiPrefix}/recordings${suffix}`;
+  },
+  recordingCategories: `${apiPrefix}/recordings/categories`,
+  syncZoom: `${apiPrefix}/sync/zoom`,
+  recordingStream(recordingId) {
+    return `${apiPrefix}/recordings/${recordingId}/stream`;
+  },
+  recordingThumbnail(recordingId) {
+    return `${apiPrefix}/recordings/${recordingId}/thumbnail`;
+  }
+};
+
 export async function apiRequest(path, options = {}) {
   const { headers, ...requestOptions } = options;
 
-  const response = await fetch(path, {
+  const response = await fetch(apiUrl(path), {
     ...requestOptions,
     headers: {
       'Content-Type': 'application/json',
@@ -21,9 +45,9 @@ export async function apiRequest(path, options = {}) {
 }
 
 export function recordingStreamUrl(recordingId) {
-  return `/api/recordings/${recordingId}/stream`;
+  return apiUrl(endpoints.recordingStream(recordingId));
 }
 
 export function recordingThumbnailUrl(recordingId) {
-  return `/api/recordings/${recordingId}/thumbnail`;
+  return apiUrl(endpoints.recordingThumbnail(recordingId));
 }

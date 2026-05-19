@@ -4,7 +4,7 @@ import CategoryFilter from './components/CategoryFilter.jsx';
 import EmptyState from './components/EmptyState.jsx';
 import RecordingCard from './components/RecordingCard.jsx';
 import RecordingPlayer from './components/RecordingPlayer.jsx';
-import { apiRequest } from './utils/api.js';
+import { apiRequest, endpoints } from './utils/api.js';
 
 const LOGO_SOURCES = ['/sajha-logo.png', '/sajha-logo.jpg', '/sajha-logo.svg', '/sajha-logo.webp'];
 
@@ -28,10 +28,9 @@ export default function App() {
 
   async function loadRecordings() {
     setError('');
-    const suffix = queryString ? `?${queryString}` : '';
     const [recordingData, categoryData] = await Promise.all([
-      apiRequest(`/api/recordings${suffix}`),
-      apiRequest('/api/recordings/categories')
+      apiRequest(endpoints.recordings(queryString)),
+      apiRequest(endpoints.recordingCategories)
     ]);
 
     setRecordings(recordingData.items);
@@ -64,7 +63,7 @@ export default function App() {
     setError('');
 
     try {
-      await apiRequest('/api/sync/zoom', { method: 'POST' });
+      await apiRequest(endpoints.syncZoom, { method: 'POST' });
       await loadRecordings();
     } catch (err) {
       setError(err.message);
