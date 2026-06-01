@@ -6,9 +6,19 @@ import { startAutoSync } from './services/scheduler.js';
 async function startServer() {
   await connectDatabase();
 
-  app.listen(env.PORT, () => {
+  const server = app.listen(env.PORT, () => {
     console.log(`API server running on http://localhost:${env.PORT}`);
     startAutoSync();
+  });
+
+  server.on('error', (error) => {
+    if (error.code === 'EADDRINUSE') {
+      console.error(`Port ${env.PORT} is already in use. Stop the other process or set a different PORT in .env.`);
+    } else {
+      console.error('API server failed:', error);
+    }
+
+    process.exit(1);
   });
 }
 

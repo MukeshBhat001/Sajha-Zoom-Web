@@ -1,0 +1,51 @@
+
+> zoom-recorded-class-website@1.0.0 dev
+> concurrently "npm:dev:server" "npm:dev:client"
+
+[dev:client] 
+[dev:client] > zoom-recorded-class-website@1.0.0 dev:client
+[dev:client] > vite --host 0.0.0.0 --config client/vite.config.js
+[dev:client] 
+[dev:server] 
+[dev:server] > zoom-recorded-class-website@1.0.0 dev:server
+[dev:server] > nodemon server/src/index.js
+[dev:server] 
+[dev:server] [33m[nodemon] 3.1.14[39m
+[dev:server] [33m[nodemon] to restart at any time, enter `rs`[39m
+[dev:server] [33m[nodemon] watching path(s): *.*[39m
+[dev:server] [33m[nodemon] watching extensions: js,mjs,cjs,json[39m
+[dev:server] [32m[nodemon] starting `node server/src/index.js`[39m
+[dev:client] 
+[dev:client]   [32m[1mVITE[22m v6.4.2[39m  [2mready in [0m[1m390[22m[2m[0m ms[22m
+[dev:client] 
+[dev:client]   [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m5173[22m/[39m
+[dev:client]   [32m➜[39m  [1mNetwork[22m: [36mhttp://192.168.56.1:[1m5173[22m/[39m
+[dev:client]   [32m➜[39m  [1mNetwork[22m: [36mhttp://192.168.5.1:[1m5173[22m/[39m
+[dev:client]   [32m➜[39m  [1mNetwork[22m: [36mhttp://10.10.10.1:[1m5173[22m/[39m
+[dev:client]   [32m➜[39m  [1mNetwork[22m: [36mhttp://192.168.100.25:[1m5173[22m/[39m
+[dev:server] MongoDB SRV lookup failed with the default resolver. Retrying with configured DNS servers.
+[dev:server] MongoDB connected
+[dev:server] API server running on http://localhost:5000
+[dev:server] Zoom auto sync scheduled every 15 minute(s).
+[dev:server] Zoom sync cleanup: no deleted Zoom recordings found in MongoDB.
+[dev:server] Zoom sync cleanup: no deleted Zoom recordings found in MongoDB.
+[dev:server] Zoom sync cleanup: no deleted Zoom recordings found in MongoDB.
+[dev:server] Zoom sync cleanup: no deleted Zoom recordings found in MongoDB.
+[dev:server] Scheduled Zoom sync failed: fetch failed
+[dev:server] Scheduled Zoom sync failed: fetch failed
+[dev:server] Scheduled Zoom sync failed: fetch failed
+[dev:server] Scheduled Zoom sync failed: fetch failed
+[dev:server] Zoom sync cleanup: no deleted Zoom recordings found in MongoDB.
+[dev:server] Zoom sync cleanup: no deleted Zoom recordings found in MongoDB.
+[dev:server] Zoom sync cleanup: no deleted Zoom recordings found in MongoDB.
+[dev:server] Scheduled Zoom sync failed: fetch failed
+[dev:server] Zoom sync cleanup: no deleted Zoom recordings found in MongoDB.
+[dev:server] Scheduled Zoom sync failed: fetch failed
+[dev:server] Scheduled Zoom sync failed: fetch failed
+[dev:server] Zoom sync cleanup: no deleted Zoom recordings found in MongoDB.
+[dev:server] Zoom sync cleanup: no deleted Zoom recordings found in MongoDB.
+[dev:server] Zoom sync cleanup: no deleted Zoom recordings found in MongoDB.
+[dev:server] Zoom sync cleanup: no deleted Zoom recordings found in MongoDB.
+[dev:server] Zoom sync cleanup: no deleted Zoom recordings found in MongoDB.
+[dev:server] Scheduled Zoom sync failed: fetch failed
+[dev:server] [31m[nodemon] app crashed - waiting for file changes before starting...[39m
